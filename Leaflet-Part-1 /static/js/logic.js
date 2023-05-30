@@ -1,5 +1,5 @@
 // build map 
-var map = L.map("map", {
+var myMap = L.map("map", {
     center: 
     [40, -95],
     zoom: 3});
@@ -7,10 +7,10 @@ var map = L.map("map", {
 // add the tile layer
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+}).addTo(myMap);
 
 // link geojson data 
-var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_hour.geojson"
+var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
 // Data
 d3.json(url).then(function(data) {
@@ -20,6 +20,17 @@ d3.json(url).then(function(data) {
         let latitude = data.features[i].geometry.coordinates[1];
         let depth = data.features[i].geometry.coordinates[2];
         let magnitude = data.features[i].properties.mag;
+        let place = data.features[i].properties.place;
+
+        function colorMap(depth) {
+            if (depth > 90) return "lightblue";
+            if (depth > 70) return "blue"; 
+            if (depth > 50) return "lightgreen";
+            if (depth > 30) return "green";
+            if (depth > 10) return "yellow";
+            if (depth > -10) return "red";
+            else return "orange";
+            };
 
         var dataMarker = L.circleMarker([latitude, longitude],{
             radius: magnitude**2,
